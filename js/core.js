@@ -267,6 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    function displayMaxRate() {
+        let v = getValues();
+        const bfMax = Math.round(RateHelper.getBetaflightRates(1, 1, v.bf.superRate, v.bf.rcRate, v.bf.expo, true, 2000));
+        ui.bf.maxDisplay.textContent = `${bfMax} deg/s`;
+        ui.act.maxDisplay.textContent = `${v.act.max} deg/s`;
+    }
+
     function updateDisplayBf() {
         const v = getValues();
         let parEl = this.parentElement;
@@ -276,10 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             inputEl[0].value = this.value;
         }
-        const bfMax = Math.round(RateHelper.getBetaflightRates(1, 1, v.bf.superRate, v.bf.rcRate, v.bf.expo, true, 2000));
-        ui.bf.maxDisplay.textContent = `${bfMax} deg/s`;
-        ui.act.maxDisplay.textContent = `${v.act.max} deg/s`;
-        
+        displayMaxRate();
         drawGraph(v);
     }
 
@@ -427,11 +431,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.bf.dispExpo.value = res.rcExpo;
         }
         v = getValues();
+        displayMaxRate();
         drawGraph(v);
     });
     const v = getValues();
-    const bfMax = Math.round(RateHelper.getBetaflightRates(1, 1, v.bf.superRate, v.bf.rcRate, v.bf.expo, true, 2000));
-    ui.bf.maxDisplay.textContent = `${bfMax} deg/s`;
-    ui.act.maxDisplay.textContent = `${v.act.max} deg/s`;
+    displayMaxRate();
     drawGraph(v);
 });
