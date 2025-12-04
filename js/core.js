@@ -267,95 +267,25 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    function updateDisplayRc() {
-        if (this.id == 'in-rcRate'){
-            ui.bf.dispRc.value = ui.bf.rcRate.value;
-        } else {
-            ui.bf.rcRate.value = ui.bf.dispRc.value;
-        }
-    }
-
-    [ui.bf.dispRc, ui.bf.rcRate].forEach(index => {
-        index.addEventListener('input', updateDisplayRc);
-    })
-
-    function updateDisplayRate() {
-        if (this.id == 'in-rate'){
-            ui.bf.dispRate.value = ui.bf.rate.value;
-        } else {
-            ui.bf.rate.value = ui.bf.dispRate.value;
-        }
-    }
-
-    [ui.bf.rate, ui.bf.dispRate].forEach(index => {
-        index.addEventListener('input', updateDisplayRate);
-    })
-    
-    function updateDisplayRcExpo() {
-        if (this.id == 'in-expo'){
-            ui.bf.dispExpo.value = ui.bf.expo.value;
-        } else {
-            ui.bf.expo.value = ui.bf.dispExpo.value;
-        }
-    }
-
-    [ui.bf.expo, ui.bf.dispExpo].forEach(index => {
-        index.addEventListener('input', updateDisplayRcExpo);
-    })
-
-    function updateDisplayCenterSensitivity() {
-        if (this.id == 'in-center'){
-            ui.act.dispCenter.value = ui.act.center.value;
-        } else {
-            ui.act.center.value = ui.act.dispCenter.value;
-        }
-    }
-
-    [ui.act.center, ui.act.dispCenter].forEach(index => {
-        index.addEventListener('input', updateDisplayCenterSensitivity);
-    })    
-
-    function updateDisplayMaxRate() {
-        if (this.id == 'in-max'){
-            ui.act.dispMax.value = ui.act.max.value;
-        } else {
-            ui.act.max.value = ui.act.dispMax.value;
-        }
-    }
-
-    [ui.act.max, ui.act.dispMax].forEach(index => {
-        index.addEventListener('input', updateDisplayMaxRate);
-    })
-
-    function updateDisplayExpo() {
-        if (this.id == 'in-actExpo'){
-            ui.act.dispExpo.value = ui.act.expo.value;
-        } else {
-            ui.act.expo.value = ui.act.dispExpo.value;
-        }
-    }
-
-    [ui.act.expo, ui.act.dispExpo].forEach(index => {
-        index.addEventListener('input', updateDisplayExpo);
-    })
-
-    function updateDisplays() {
+    function updateDisplayBf() {
         const v = getValues();
-        
-        ui.bf.dispRc.textContent = v.bf.rcRate.toFixed(2);
-        ui.bf.dispRate.textContent = v.bf.superRate.toFixed(2);
-        ui.bf.dispExpo.textContent = v.bf.expo.toFixed(2);
-        
-        ui.act.dispCenter.textContent = v.act.center;
-        ui.act.dispMax.textContent = v.act.max;
-        ui.act.dispExpo.textContent = v.act.expo.toFixed(2);
-
+        let parEl = this.parentElement;
+        let inputEl = parEl.getElementsByTagName('input');
+        if (this.id == inputEl[0].id){
+            inputEl[1].value = this.value;
+        } else {
+            inputEl[0].value = this.value;
+        }
         const bfMax = Math.round(RateHelper.getBetaflightRates(1, 1, v.bf.superRate, v.bf.rcRate, v.bf.expo, true, 2000));
         ui.bf.maxDisplay.textContent = `${bfMax} deg/s`;
-        ui.act.maxDisplay.textContent = `${v.act.max} deg/s`; 
-
+        ui.act.maxDisplay.textContent = `${v.act.max} deg/s`;
+        
         drawGraph(v);
     }
+
+    [ui.bf.dispRc, ui.bf.rcRate, ui.bf.rate, ui.bf.dispRate, ui.bf.expo, ui.bf.dispExpo, ui.act.center, ui.act.dispCenter, ui.act.max, ui.act.dispMax, ui.act.expo, ui.act.dispExpo].forEach(index => {
+         index.addEventListener('input', updateDisplayBf);
+    })
 
     function drawGraph(vals) {
         const ctx = ui.canvas.getContext('2d');
@@ -467,33 +397,41 @@ document.addEventListener('DOMContentLoaded', () => {
     [ui.bf.rcRate, ui.bf.rate, ui.bf.expo].forEach(input => {
         input.addEventListener('input', () => {
             lastEditedMode = 'betaflight';
-            updateDisplays();
         });
     });
 
     [ui.act.center, ui.act.max, ui.act.expo].forEach(input => {
         input.addEventListener('input', () => {
             lastEditedMode = 'actual';
-            updateDisplays();
         });
     });
 
     ui.btnMatch.addEventListener('click', () => {
-        const v = getValues();
+        let v = getValues();
         
         if (lastEditedMode === 'betaflight') {
             const res = convertBfToActual(v.bf.rcRate, v.bf.superRate, v.bf.expo);
             ui.act.center.value = res.centerSensitivity;
+            ui.act.dispCenter.value = res.centerSensitivity;
             ui.act.max.value = res.maxRate;
+            ui.act.dispMax.value = res.maxRate;
             ui.act.expo.value = res.actualExpo;
+            ui.act.dispExpo.value = res.actualExpo.toFixed(2);
         } else {
             const res = convertActualToBf(v.act.center, v.act.max, v.act.expo);
             ui.bf.rcRate.value = res.rcRate;
+            ui.bf.dispRc.value = res.rcRate;
             ui.bf.rate.value = res.superRate;
+            ui.bf.dispRate.value = res.superRate;
             ui.bf.expo.value = res.rcExpo;
+            ui.bf.dispExpo.value = res.rcExpo;
         }
-        updateDisplays();
+        v = getValues();
+        drawGraph(v);
     });
-
-    updateDisplays();
+    const v = getValues();
+    const bfMax = Math.round(RateHelper.getBetaflightRates(1, 1, v.bf.superRate, v.bf.rcRate, v.bf.expo, true, 2000));
+    ui.bf.maxDisplay.textContent = `${bfMax} deg/s`;
+    ui.act.maxDisplay.textContent = `${v.act.max} deg/s`;
+    drawGraph(v);
 });

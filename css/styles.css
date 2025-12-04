@@ -62,13 +62,17 @@ p.subtitle { color: #888; margin-top: 0; margin-bottom: 30px; }
 
 .betaflight-title { color: var(--betaflight); }
 .actual-title { color: var(--actual); }
-.control-group { margin-bottom: 20px; }
+
+.control-group { 
+    margin-bottom: 30px; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
 
 label {
-    display: flex;
-    justify-content: space-between;
     font-size: 1rem;
-    margin-bottom: 8px;
     color: #bbb;
 }
 
@@ -92,6 +96,7 @@ input[type=range] {
     background: #424242;
     border-radius: 5px;
     outline: none;
+    margin-top: 10px;
 }
 
 input[type=range]::-webkit-slider-thumb {
