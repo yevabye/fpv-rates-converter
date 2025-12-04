@@ -43,7 +43,7 @@ p.subtitle { color: #888; margin-top: 0; margin-bottom: 30px; }
     background: var(--panel);
     padding: 20px;
     border-radius: 12px;
-    width: 300px;
+    width: 275px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.3);
     flex-shrink: 0;
 }
@@ -106,8 +106,8 @@ input[type=range]::-webkit-slider-thumb {
 
 #rateGraph {
     flex-grow: 1;
-    width: 400px;
-    height: 400px;
+    width: 450px;
+    height: 450px;
     background: var(--panel);
     padding: 20px;
     border-radius: 12px;

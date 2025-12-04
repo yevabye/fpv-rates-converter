@@ -291,6 +291,53 @@ document.addEventListener('DOMContentLoaded', () => {
         index.addEventListener('input', updateDisplayRate);
     })
     
+    function updateDisplayRcExpo() {
+        if (this.id == 'in-expo'){
+            ui.bf.dispExpo.value = ui.bf.expo.value;
+        } else {
+            ui.bf.expo.value = ui.bf.dispExpo.value;
+        }
+    }
+
+    [ui.bf.expo, ui.bf.dispExpo].forEach(index => {
+        index.addEventListener('input', updateDisplayRcExpo);
+    })
+
+    function updateDisplayCenterSensitivity() {
+        if (this.id == 'in-center'){
+            ui.act.dispCenter.value = ui.act.center.value;
+        } else {
+            ui.act.center.value = ui.act.dispCenter.value;
+        }
+    }
+
+    [ui.act.center, ui.act.dispCenter].forEach(index => {
+        index.addEventListener('input', updateDisplayCenterSensitivity);
+    })    
+
+    function updateDisplayMaxRate() {
+        if (this.id == 'in-max'){
+            ui.act.dispMax.value = ui.act.max.value;
+        } else {
+            ui.act.max.value = ui.act.dispMax.value;
+        }
+    }
+
+    [ui.act.max, ui.act.dispMax].forEach(index => {
+        index.addEventListener('input', updateDisplayMaxRate);
+    })
+
+    function updateDisplayExpo() {
+        if (this.id == 'in-actExpo'){
+            ui.act.dispExpo.value = ui.act.expo.value;
+        } else {
+            ui.act.expo.value = ui.act.dispExpo.value;
+        }
+    }
+
+    [ui.act.expo, ui.act.dispExpo].forEach(index => {
+        index.addEventListener('input', updateDisplayExpo);
+    })
 
     function updateDisplays() {
         const v = getValues();
@@ -323,13 +370,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ctx.clearRect(0, 0, w, h);
         
-        const paddingLeft = 20;
-        const paddingBottom = 20;
+        const paddingLeft = 50;
+        const paddingBottom = 40;
         const paddingTop = 20;
         const paddingRight = 20;
         const graphW = w - paddingLeft - paddingRight;
         const graphH = h - paddingTop - paddingBottom;
-        const maxY = 2000;
+        const maxY = Math.max(vals.act.max, RateHelper.getBetaflightRates(1, 1, vals.bf.superRate, vals.bf.rcRate, vals.bf.expo, true, 2000)) * 1.01;
 
         const getX = (stick) => paddingLeft + (stick * graphW);
         const getY = (rate) => h - paddingBottom - ((rate / maxY) * graphH);
@@ -361,16 +408,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         ctx.stroke();
 
-        for(let j = 0; j <= 10; j++) {
-                const labelVal = j * 200;
+        for(let j = 0; j <= 20; j++) {
+                const labelVal = j * 100;
                 const y = getY(labelVal);
                 ctx.fillText(labelVal, paddingLeft - 10, y);
         }
 
-        for(let k = 0; k<=4; k++){
-            const stickPos = k / 4;
+        for(let k = 0; k<=10; k++){
+            const stickPos = k / 10;
             const x = getX(stickPos);
-            ctx.fillText((stickPos * 100).toFixed(0) + '%', x, h - paddingBottom + 15);
+            ctx.fillText((stickPos * 100).toFixed(0) + '%', x + 12 , h - paddingBottom + 15);
         }
 
         function drawCurve(color, type) {
@@ -396,9 +443,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             ctx.stroke();
         }
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighten';
 
         drawCurve('#52A9FF', 'act'); 
         drawCurve('#FF5252', 'bf'); 
+
+        ctx.restore();
+
+        ctx.textAlign = 'center';
+        const centerX = paddingLeft + (w - paddingLeft - paddingRight - 20) / 2;
+        ctx.fillText("Stick Position", centerX, h - 3.5);
+        ctx.save();
+
+        const centerY = paddingTop + (h - paddingTop - paddingBottom) / 2;
+        ctx.translate(5, centerY); 
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText("Rate (deg/s)", 0, 0);
+
+        ctx.restore();
     }
 
     [ui.bf.rcRate, ui.bf.rate, ui.bf.expo].forEach(input => {
