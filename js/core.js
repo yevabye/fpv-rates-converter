@@ -424,11 +424,11 @@ window.addEventListener('load', () => {
         } else {
             const res = convertActualToBf(v.act.center, v.act.max, v.act.expo);
             ui.bf.rcRate.value = res.rcRate;
-            ui.bf.dispRc.value = res.rcRate;
+            ui.bf.dispRc.value = res.rcRate.toFixed(2);
             ui.bf.rate.value = res.superRate;
-            ui.bf.dispRate.value = res.superRate;
+            ui.bf.dispRate.value = res.superRate.toFixed(2);
             ui.bf.expo.value = res.rcExpo;
-            ui.bf.dispExpo.value = res.rcExpo;
+            ui.bf.dispExpo.value = res.rcExpo.toFixed(2);
         }
         v = getValues();
         displayMaxRate();
